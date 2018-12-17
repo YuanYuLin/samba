@@ -243,10 +243,15 @@ def MAIN_INSTALL(args):
     set_global(args)
 
     iopc.installBin(args["pkg_name"], ops.path_join(dst_lib_dir, "."), "lib")
-    iopc.installBin(args["pkg_name"], ops.path_join(dst_bin_dir, "."), "bin")
+    iopc.installBin(args["pkg_name"], ops.path_join(dst_bin_dir, "."), "usr/sbin")
     iopc.installBin(args["pkg_name"], ops.path_join(dst_usr_local_dir, "."), "usr/local")
     #iopc.installBin(args["pkg_name"], ops.path_join(tmp_include_dir, "."), dst_include_dir)
     #iopc.installBin(args["pkg_name"], ops.path_join(dst_pkgconfig_dir, '.'), "pkgconfig")
+
+    return False
+
+def MAIN_SDKENV(args):
+    set_global(args)
 
     return False
 
