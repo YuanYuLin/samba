@@ -65,8 +65,13 @@ def MAIN_ENV(args):
     set_global(args)
 
     ops.exportEnv(ops.setEnv("CC", ops.getEnv("CROSS_COMPILE") + "gcc"))
+    '''
     ops.exportEnv(ops.setEnv("CXX", ops.getEnv("CROSS_COMPILE") + "g++"))
+    ops.exportEnv(ops.setEnv("CPP", ops.getEnv("CROSS_COMPILE") + "g++"))
+    ops.exportEnv(ops.setEnv("AR", ops.getEnv("CROSS_COMPILE") + "ar"))
+    ops.exportEnv(ops.setEnv("RANLIB", ops.getEnv("CROSS_COMPILE") + "ranlib"))
     ops.exportEnv(ops.setEnv("CROSS", ops.getEnv("CROSS_COMPILE")))
+    '''
     ops.exportEnv(ops.setEnv("DESTDIR", install_tmp_dir))
 
     return False
@@ -92,10 +97,19 @@ def MAIN_CONFIGURE(args):
     set_global(args)
 
     job_count = ops.getEnv("BUILD_JOBS_COUNT")
+
     extra_conf = []
+    '''
     #extra_conf.append("--cross-compile")
+    #extra_conf.append("-C -V")
+    #extra_conf.append("--cross-answers=cc.txt")
+    #extra_conf.append("--hostcc=" + cc_host)
+    extra_conf.append("--abi-check-disable")
+    extra_conf.append("--disable-rpath")
+    extra_conf.append("--bundled-libraries=NONE")
+    #extra_conf.append("--cross-execute='qemu-arm-static -L /usr/arm-linux-gnu'")
     extra_conf.append("--jobs=" + job_count)
-    #extra_conf.append("--enable-gnutls")
+    extra_conf.append("--disable-gnutls")
     #extra_conf.append("--private-libraries=NONE")
 
     extra_conf.append("--without-gettext")
@@ -105,9 +119,16 @@ def MAIN_CONFIGURE(args):
     extra_conf.append("--without-winbind")
     extra_conf.append("--without-ldap")
     extra_conf.append("--without-pam")
+    extra_conf.append("--without-pie")
+    extra_conf.append("--without-fam")
+    extra_conf.append("--without-dmapi")
+    extra_conf.append("--without-automount")
+    extra_conf.append("--without-utmp")
+    extra_conf.append("--without-dnsupdate")
     extra_conf.append("--without-acl-support")
     extra_conf.append("--without-quotas")
     extra_conf.append("--without-cluster-support")
+    extra_conf.append("--disable-glusterfs")
     extra_conf.append("--without-profiling-data")
     extra_conf.append("--without-libarchive")
     extra_conf.append("--without-regedit")
@@ -116,7 +137,37 @@ def MAIN_CONFIGURE(args):
     extra_conf.append("--disable-cups")
     extra_conf.append("--disable-iprint")
     extra_conf.append("--disable-avahi")
+    '''
+    extra_conf.append("--disable-python") 
+    extra_conf.append("--without-ad-dc")
+    extra_conf.append("--without-acl-support")
+    extra_conf.append("--without-ldap") 
+    extra_conf.append("--without-ads") 
+    extra_conf.append("--without-pam")
+    extra_conf.append("--without-gettext")
 
+    extra_conf.append("--jobs=" + job_count)
+    extra_conf.append("--without-systemd")
+    extra_conf.append("--without-regedit")
+    extra_conf.append("--without-cluster-support")
+    extra_conf.append("--without-ntvfs-fileserver")
+    extra_conf.append("--without-winbind")
+    extra_conf.append("--disable-glusterfs")
+    extra_conf.append("--disable-cups")
+    extra_conf.append("--disable-iprint")
+    extra_conf.append("--disable-avahi")
+    extra_conf.append("--without-automount")
+    extra_conf.append("--without-dnsupdate")
+    extra_conf.append("--without-fam")
+    extra_conf.append("--without-dmapi")
+    extra_conf.append("--without-quotas")
+    extra_conf.append("--without-profiling-data")
+    extra_conf.append("--without-utmp")
+    extra_conf.append("--without-libarchive")
+    #extra_conf.append("--enable-developer")
+
+    print extra_conf
+    #iopc.waf(tarball_dir, extra_conf)
     iopc.configure(tarball_dir, extra_conf)
 
     return True

@@ -1,6 +1,7 @@
 {
 "COMMON":
 [
+{"enabled":1, "name": "0001-lib.replace.wscript.patch"},
 {"enabled":0, "name": ""}
 ]
 }

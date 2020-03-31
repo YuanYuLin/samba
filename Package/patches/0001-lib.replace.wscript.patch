@@ -1,0 +1,52 @@
+--- a/lib/replace/wscript	2020-02-07 14:47:27.795308574 +0800
++++ b/lib/replace/wscript	2020-02-07 14:47:52.133196067 +0800
+@@ -190,49 +190,6 @@
+                         'socket nsl', checklibc=True,
+                         headers='sys/socket.h netinet/in.h arpa/inet.h netdb.h')
+ 
+-    # Some old Linux systems have broken header files and
+-    # miss the IPV6_V6ONLY define in netinet/in.h,
+-    # but have it in linux/in6.h.
+-    # We can't include both files so we just check if the value
+-    # if defined and do the replacement in system/network.h
+-    if not conf.CHECK_VARIABLE('IPV6_V6ONLY',
+-                               headers='sys/socket.h netdb.h netinet/in.h'):
+-        conf.CHECK_CODE('''
+-                        #include <linux/in6.h>
+-                        #if (IPV6_V6ONLY != 26)
+-                        #error no IPV6_V6ONLY support on linux
+-                        #endif
+-                        int main(void) { return IPV6_V6ONLY; }
+-                        ''',
+-                        define='HAVE_LINUX_IPV6_V6ONLY_26',
+-                        addmain=False,
+-                        msg='Checking for IPV6_V6ONLY in linux/in6.h',
+-                        local_include=False)
+-
+-    conf.CHECK_CODE('''
+-                       struct sockaddr_storage sa_store;
+-                       struct addrinfo *ai = NULL;
+-                       struct in6_addr in6addr;
+-                       int idx = if_nametoindex("iface1");
+-                       int s = socket(AF_INET6, SOCK_STREAM, 0);
+-                       int ret = getaddrinfo(NULL, NULL, NULL, &ai);
+-                       if (ret != 0) {
+-                           const char *es = gai_strerror(ret);
+-                       }
+-                       freeaddrinfo(ai);
+-                       {
+-                          int val = 1;
+-                          #ifdef HAVE_LINUX_IPV6_V6ONLY_26
+-                          #define IPV6_V6ONLY 26
+-                          #endif
+-                          ret = setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY,
+-                                           (const void *)&val, sizeof(val));
+-                       }
+-                       ''',
+-                    define='HAVE_IPV6',
+-                    lib='nsl socket',
+-                    headers='sys/socket.h netdb.h netinet/in.h net/if.h')
+-
+     if conf.CONFIG_SET('HAVE_SYS_UCONTEXT_H') and conf.CONFIG_SET('HAVE_SIGNAL_H'):
+         conf.CHECK_CODE('''
+                        ucontext_t uc;
